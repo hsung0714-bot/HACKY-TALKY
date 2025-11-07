@@ -1,8 +1,18 @@
-OTP(OpenTripPlanner) 를 이용한 경로 3개 찾기 + 시간 반환
+OTP(OpenTripPlanner)
 
-나오는 경로
-1) fastest
-2) fewest transfers
-3) least walking
+기능	설명
+1.멀티모달 경로 탐색	도보, 자전거, 버스, 지하철, 기차, 차량 등 다양한 교통 수단을 조합하여 최적 경로를 계산
+2. 대중교통 일정 기반 탐색	GTFS(General Transit Feed Specification) 형식의 데이터를 이용해 버스·지하철 시간표 기반 경로 계산
+3. 지도 데이터 연동	OpenStreetMap(OSM) 데이터를 이용해 도로, 인도, 자전거 도로 네트워크를 구축
+4. 실시간 교통 정보	GTFS-RT(Realtime) 피드를 통해 지연, 결항, 혼잡도 등을 반영한 경로 탐색
+5. API 제공	RESTful API를 통해 외부 서비스(웹/앱)에서 쉽게 경로 탐색 기능을 호출 가능
+6. 라우팅 그래프 구축	OSM + GTFS 데이터를 병합하여 내부적으로 “Routing Graph”를 생성 후 빠른 탐색 수행
+7. 출발/도착 시각 기반 탐색	특정 출발 시간 또는 도착 시간을 지정하여, 시간대별 최적 경로 계산 가능
 
-도착시간을 주면 예상출발시간 줌
+사용데이터
+1. OSM : 오픈스트리트맵 south korea
+2. GTFS : 대중교통 데이터, ZIP 파일로 수집된 일련의 텍스트 파일로 구성
+
+두 데이터를 사용해 빌드해 graph.obj 생성 
+데이터가 커서 전국 -> 수도권 -> 서울권 (원하는 것은 앞으로 확장을 하는 것) 
+
