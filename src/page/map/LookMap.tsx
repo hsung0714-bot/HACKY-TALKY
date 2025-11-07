@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from "react-router-dom";
 import styles from './lookMap.module.css';
+import Header from '../../layout/Header';
 
 interface LocationState {
   startPosition: string;
@@ -57,7 +58,6 @@ const LookMap: React.FC = () => {
         setStartCoords(start);
         setEndCoords(end);
 
-        // 백엔드로 위도/경도 데이터 전송
         if (start && end) {
           const response = await fetch("http://localhost:4000/api/route", {
             method: "POST",
@@ -78,6 +78,8 @@ const LookMap: React.FC = () => {
   }, [startPosition, endPosition]);
 
   return (
+    <div>
+        <Header/>
     <div className={styles.mapContainer}>
       {startPosition && endPosition ? (
         <>
@@ -103,11 +105,15 @@ const LookMap: React.FC = () => {
             )}
             {date && <p>날짜: {date}</p>}
             {endtime && <p>도착 시간: {endtime}</p>}
+            <div>
+                <label className={styles.endtime}>출발시간</label>
+            </div>
           </div>
         </>
       ) : (
         <p>경로 데이터가 없습니다.</p>
       )}
+    </div>
     </div>
   );
 };

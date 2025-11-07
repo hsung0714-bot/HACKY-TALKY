@@ -1,0 +1,33 @@
+/* 검색 박스 컨테이너 */
+.container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+/* 돋보기 아이콘 */
+.icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* 실제 입력창 */
+.input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 14px;
+
+  /* ✅ 입력 글씨를 검정색으로 */
+  color: #000;
+}
+
+/* placeholder 색 */
+.input::placeholder {
+  color: #aaa;
+}

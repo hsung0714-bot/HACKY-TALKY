@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import CalendarModal from '../../compponent/CalendarModal';
 import styles from './Calendar.module.css';
+import Header from '../../layout/Header';
 
 interface MyEvent {
   id: string;
@@ -82,6 +83,8 @@ const Calendar: React.FC = () => {
   };
 
   return (
+    <div>
+    <Header/>
     <div className={styles.calendarContainer}>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -105,6 +108,7 @@ const Calendar: React.FC = () => {
         onAddEvent={handleAddOrUpdateEvent}
         onDeleteEvent={selectedEvent ? () => handleDeleteEvent(selectedEvent.id) : undefined}
       />
+    </div>
     </div>
   );
 };
