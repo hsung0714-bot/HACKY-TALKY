@@ -1,0 +1,217 @@
+/* 오버레이 (배경 어둡게) */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+
+/* 사이드박스 */
+.sidebox {
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 320px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 열린 상태 */
+.sidebox.open {
+  left: 0;
+}
+
+/* 헤더 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+padding: 8px 20px 0px;  border-bottom: 1px solid #e9ecef;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hamburgerButton {
+  font-size: 22px;
+  background: none;
+  border: none;
+  color: #000000; /* ✅ 버튼 색상을 흰색으로 변경 */
+  cursor: pointer;
+  padding: 20px;
+  margin: 0;
+  width: 60px;    /* 버튼(클릭 영역) 가로 크기 */
+  height: 50px;   /* 버튼(클릭 영역) 세로 크기 */
+  display: flex;  /* 가운데 정렬 */
+ align-items: center;
+ justify-content: center;
+ border-radius: 6px; /* (선택) 둥근 모서리 주기 */
+ transition: background-color 0.2s;
+
+}
+
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;  
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+
+}
+
+/* 검색 섹션 */
+.searchSection {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.searchIcon {
+  font-size: 16px;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.searchInput::placeholder {
+  color: #aaa;
+}
+
+/* 카테고리 섹션 */
+.categorySection {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.addButton {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 18px;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.addButton:hover {
+  background-color: #f5f5f5;
+  border-radius: 6px;  
+}
+
+/* 카테고리 목록 */
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.categoryItem:hover {
+  background-color: #f8f9fa;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0; /* ✅ 체크박스 크기 고정 */
+}
+
+/* ✅ 카테고리 이름 왼쪽 정렬 */
+.categoryItem label {
+  flex: 1;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  text-align: left; /* ✅ 왼쪽 정렬 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settingsButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  flex-shrink: 0; /* ✅ 설정 버튼 크기 고정 */
+}
+
+.settingsButton:hover {
+  background-color: #e9ecef;
+}
+/* Sidebox.module.css */
+.logoImg {
+  height: 40px;  /* 헤더보다 약간 작게 (너무 크면 답답) */
+  width: auto;
+  object-fit: contain;
+  margin-left: 0px; /* 햄버거 아이콘과의 간격 */
+}
