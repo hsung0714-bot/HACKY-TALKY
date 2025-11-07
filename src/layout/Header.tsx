@@ -33,9 +33,6 @@ const Header: React.FC = () => {
         </div>
 
         <div className={styles.rightButtons}>
-          <button aria-label="오늘 보기">오늘</button>
-          <button aria-label="월별 보기">월</button>
-          <button aria-label="연도별 보기">연도</button>
           <button 
             onClick={togglePopup} 
             className={styles.profileButton}
