@@ -3,6 +3,7 @@
 SQLAlchemy를 사용한 데이터베이스 세션 관리
 """
 import os
+from typing import Iterator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import NullPool
@@ -25,7 +26,7 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db() -> Session:
+def get_db() -> Iterator[Session]:
     """
     FastAPI 의존성 주입을 위한 데이터베이스 세션 생성 함수
     각 요청마다 새로운 세션을 생성하고, 요청 완료 후 자동으로 닫힘
