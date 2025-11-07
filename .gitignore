@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.zip
+*.obj
+*.osm.pbf
+graphs/default/graph.obj
+graphs/default/*.zip
+graphs/default/*.osm.pbf
+gtfs_archive/
+tmp_gtfs/
+otp.jar
+*.code-workspace
+.env
