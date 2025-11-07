@@ -1,0 +1,151 @@
+/* lookMap.module.css */
+
+.mapContainer {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  display: flex;
+  gap: 20px;
+}
+
+.map {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapPlaceholder {
+  width: 900px;
+  height: 600px;
+  border: 2px solid #333;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+}
+
+.mapPlaceholder p {
+  font-size: 18px;
+  color: #999;
+  margin: 0;
+}
+
+/* 오른쪽 정보 패널 */
+.infoPanel {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.Position {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.Position p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 날짜와 종료 시간 스타일 */
+.mapContainer :global(.date),
+.mapContainer :global(.endtime) {
+  margin: 0;
+  padding: 15px;
+  background-color: #f0f8ff;
+  border-left: 4px solid #4a90e2;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+.mapContainer :global(.endtime) {
+  background-color: #fff5f5;
+  border-left-color: #e24a4a;
+}
+
+/* 데이터 없을 때 메시지 */
+.mapContainer > p {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin: auto;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .infoPanel {
+    width: 250px;
+  }
+  
+  .mapPlaceholder {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mapContainer {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .infoPanel {
+    width: 100%;
+    order: -1; /* 모바일에서는 정보를 위로 */
+  }
+
+  .Position {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .Position p {
+    font-size: 14px;
+  }
+
+  .mapPlaceholder {
+    min-height: 300px;
+  }
+
+  .mapPlaceholder p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mapContainer {
+    padding: 10px;
+  }
+
+  .Position {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .Position p {
+    font-size: 13px;
+  }
+
+  .mapPlaceholder {
+    min-height: 250px;
+  }
+
+  .mapContainer :global(.date),
+  .mapContainer :global(.endtime) {
+    font-size: 14px;
+    padding: 12px;
+  }
+}

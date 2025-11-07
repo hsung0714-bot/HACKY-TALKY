@@ -1,0 +1,206 @@
+
+.calendarContainer {
+  margin-top: 60px;
+  margin-left: 180px;
+  min-width: 1200px;
+  min-height: 600px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+/* FullCalendar 커스터마이징 */
+.calendarContainer :global(.fc) {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  height: 600px;
+  width: 1200px;
+}
+
+/* 헤더 스타일링 */
+.calendarContainer :global(.fc-header-toolbar) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+}
+
+.calendarContainer :global(.fc-toolbar-title) {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 버튼 스타일링 */
+.calendarContainer :global(.fc-button) {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.calendarContainer :global(.fc-button:hover) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.calendarContainer :global(.fc-button:active),
+.calendarContainer :global(.fc-button-active) {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.calendarContainer :global(.fc-button:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 요일 헤더 */
+.calendarContainer :global(.fc-col-header-cell) {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  border: none;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+/* 날짜 셀 */
+.calendarContainer :global(.fc-daygrid-day) {
+  background: #ffffff;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.calendarContainer :global(.fc-daygrid-day:hover) {
+  background: #f8f9fa;
+}
+
+.calendarContainer :global(.fc-daygrid-day-number) {
+  font-weight: 500;
+  color: #212529;
+}
+
+/* 오늘 날짜 강조 */
+.calendarContainer :global(.fc-day-today) {
+  background: #e7f5ff !important;
+}
+
+.calendarContainer :global(.fc-day-today .fc-daygrid-day-number) {
+  background: #4c6ef5;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25rem;
+}
+
+/* 다른 월 날짜 */
+.calendarContainer :global(.fc-day-other .fc-daygrid-day-number) {
+  color: #adb5bd;
+}
+
+/* 이벤트 스타일 */
+.calendarContainer :global(.fc-event) {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: 2px 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendarContainer :global(.fc-event:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.calendarContainer :global(.fc-event-title) {
+  font-weight: 600;
+}
+
+/* 시간 그리드 뷰 */
+.calendarContainer :global(.fc-timegrid-slot) {
+  height: 3rem;
+  border-color: #e9ecef;
+}
+
+.calendarContainer :global(.fc-timegrid-slot-label) {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+/* 테두리 색상 통일 */
+.calendarContainer :global(.fc-scrollgrid) {
+  border-color: #dee2e6;
+  overflow: hidden;
+}
+
+.calendarContainer :global(.fc-scrollgrid td),
+.calendarContainer :global(.fc-scrollgrid th) {
+  border-color: #dee2e6;
+  overflow: hidden;
+}
+
+.calendarContainer :global(*) {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.calendarContainer :global(*::-webkit-scrollbar) {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .calendarContainer {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .calendarContainer :global(.fc-toolbar-title) {
+    font-size: 1.25rem;
+  }
+
+  .calendarContainer :global(.fc-button) {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .calendarContainer :global(.fc-header-toolbar) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .calendarContainer :global(.fc-toolbar-chunk) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* 로딩 애니메이션 (선택사항) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calendarContainer {
+  animation: fadeIn 0.5s ease;
+}
