@@ -10,6 +10,9 @@
   transition: opacity 0.3s ease;
 }
 
+/*이거 search거임*/
+.checkbox { accent-color: var(--acc); }
+
 /* 사이드박스 */
 .sidebox {
   position: fixed;
@@ -136,7 +139,7 @@ padding: 8px 20px 0px;  border-bottom: 1px solid #e9ecef;
   width: 28px;
   height: 28px;
   border: 1px solid #ddd;
-  border-radius: 50%;
+  border-radius: 6px;
   background: #fff;
   font-size: 18px;
   color: #000;

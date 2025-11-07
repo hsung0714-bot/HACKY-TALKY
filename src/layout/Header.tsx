@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import styles from "./Header.module.css";
 import ProfilePopup from "./ProfilePopup";
-import Sidebox from "./Sidebox";  // ✅ Sidebox import
+import Sidebox from "./Sidebox"; 
 
 const Header: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isSideboxOpen, setIsSideboxOpen] = useState(false);  // ✅ Sidebox 상태 추가
+  const [isSideboxOpen, setIsSideboxOpen] = useState(false);  
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
   };
 
-  const toggleSidebox = () => {  // ✅ Sidebox 토글 함수
+  const toggleSidebox = () => { 
     setIsSideboxOpen(!isSideboxOpen);
   };
 
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
           <button 
             className={styles.menuButton} 
             aria-label="메뉴 열기"
-            onClick={toggleSidebox}  // ✅ 클릭 이벤트 추가
+            onClick={toggleSidebox} 
           >
             ☰
           </button>
@@ -48,7 +48,6 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      {/* ✅ Sidebox 추가 */}
       <Sidebox 
         isOpen={isSideboxOpen} 
         onClose={() => setIsSideboxOpen(false)} 

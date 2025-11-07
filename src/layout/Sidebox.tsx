@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import styles from "./Sidebox.module.css";
 import CategoryModal from "../commponet/Category";
+import Search from "../commponet/Search";
+
 
 interface Category {
   id: string;
@@ -80,6 +82,12 @@ const Sidebox: React.FC<SideboxProps> = ({ isOpen, onClose }) => {
       )
     );
   };
+const [query, setQuery] = useState("");
+const filtered = categories.filter(cat =>
+  cat.name.toLowerCase().includes(query.trim().toLowerCase())
+);
+
+
 
   // ✅ 카테고리 추가 버튼 클릭 핸들러
   const handleAddButtonClick = () => {
@@ -109,17 +117,10 @@ const Sidebox: React.FC<SideboxProps> = ({ isOpen, onClose }) => {
             ✕
           </button>
         </div>
-
-        <div className={styles.searchSection}>
-          <div className={styles.searchBox}>
-            <span className={styles.searchIcon}>🔍</span>
-            <input
-              type="text"
-              placeholder="검색"
-              className={styles.searchInput}
-            />
-          </div>
+        <div className={styles.searchSection}> 
+          <Search value={query} onChange={setQuery} placeholder="검색" />
         </div>
+
 
         <div className={styles.categorySection}>
           <div className={styles.categoryHeader}>
@@ -133,15 +134,13 @@ const Sidebox: React.FC<SideboxProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className={styles.categoryList}>
-            {categories.map((category) => (
+            {filtered.map((category) => (
               <div key={category.id} className={styles.categoryItem}>
                 <input
                   type="checkbox"
                   id={`category-${category.id}`}
                   className={styles.checkbox}
-                  style={{
-                    accentColor: category.color,
-                  }}
+                  style={{ ['--acc' as any]: category.color }}
                   checked={category.checked}
                   onChange={() => toggleCategoryCheck(category.id)}
                 />
