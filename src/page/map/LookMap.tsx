@@ -1,5 +1,5 @@
 // src/page/lookMap/LookMap.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from "react-router-dom";
 import styles from './lookMap.module.css';
 
@@ -10,36 +10,99 @@ interface LocationState {
   endtime?: string;
 }
 
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
 const LookMap: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const { startPosition, endPosition, date, endtime } = (location.state as LocationState) || {};
-  
-  console.log("id:", id);
-  console.log("출발:", startPosition);
-  console.log("도착:", endPosition);
-  console.log("날짜:", date);
-  console.log("종료 시간:", endtime);
+
+  const [startCoords, setStartCoords] = useState<Coordinates | null>(null);
+  const [endCoords, setEndCoords] = useState<Coordinates | null>(null);
+
+  // 구글 맵 API 키
+  const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; 
+  // (⚠️ 키는 .env 파일에 저장하세요!)
+
+  // 지오코딩 함수
+  const geocodeAddress = async (address: string): Promise<Coordinates | null> => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_API_KEY}`
+      );
+      const data = await response.json();
+
+      if (data.status === "OK") {
+        const location = data.results[0].geometry.location;
+        return { lat: location.lat, lng: location.lng };
+      } else {
+        console.error("Geocoding failed:", data.status);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching geocode:", error);
+      return null;
+    }
+  };
+
+  // 페이지 로드 시 자동 지오코딩
+  useEffect(() => {
+    if (startPosition && endPosition) {
+      (async () => {
+        const start = await geocodeAddress(startPosition);
+        const end = await geocodeAddress(endPosition);
+        setStartCoords(start);
+        setEndCoords(end);
+
+        // 백엔드로 위도/경도 데이터 전송
+        if (start && end) {
+          const response = await fetch("http://localhost:4000/api/route", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id,
+              startCoords: start,
+              endCoords: end,
+              date,
+              endtime
+            }),
+          });
+          const result = await response.json();
+          console.log("서버 응답:", result);
+        }
+      })();
+    }
+  }, [startPosition, endPosition]);
 
   return (
     <div className={styles.mapContainer}>
       {startPosition && endPosition ? (
         <>
-          {/* 왼쪽: 지도 영역 */}
+          {/* 지도 표시 */}
           <div className={styles.map}>
             <div className={styles.mapPlaceholder}>
               <p>지도 표시 영역</p>
             </div>
           </div>
 
-          {/* 오른쪽: 정보 패널 */}
+          {/* 정보 표시 */}
           <div className={styles.infoPanel}>
             <div className={styles.Position}>
               <p>출발지: {startPosition}</p>
               <p>도착지: {endPosition}</p>
             </div>
-            {date && <p className='date'>날짜: {date}</p>}
-            {endtime && <p className='endtime'>도착 시간: {endtime}</p>}
+
+            {startCoords && endCoords && (
+              <>
+                <p>출발 좌표: {startCoords.lat}, {startCoords.lng}</p>
+                <p>도착 좌표: {endCoords.lat}, {endCoords.lng}</p>
+              </>
+            )}
+            {date && <p>날짜: {date}</p>}
+            {endtime && <p>도착 시간: {endtime}</p>}
           </div>
         </>
       ) : (
