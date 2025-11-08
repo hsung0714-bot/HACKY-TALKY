@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Dict, Any
 
 import requests
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Body
 from pydantic import BaseModel
 
 # --------------------
@@ -64,6 +64,41 @@ class SortedPlans(BaseModel):
 class OneRouteResponse(BaseModel):
     criterion: str
     result: ItineraryOut
+    
+    
+# --------------------
+# Request Body Models (POST용)
+# --------------------
+class RouteRequest(BaseModel):
+    from_place: str
+    to_place: str
+    date: str            # YYYY-MM-DD
+    time: str            # HH:MM (24h)
+    mode: str = "TRANSIT,WALK"
+    search_window: int = 7200      # seconds
+    num_itineraries: int = 5
+    arrive_by: bool = False
+    max_transfers: Optional[int] = None
+    max_walk_distance: Optional[int] = None
+    walk_reluctance: Optional[float] = None
+
+
+class RouteOneRequest(RouteRequest):
+    criterion: str = "fastest"     # fastest | fewest_transfers | least_walking
+
+
+class ArriveRequest(BaseModel):
+    from_place: str
+    to_place: str
+    date: str                 # YYYY-MM-DD
+    arrive_time: str          # HH:MM (도착 시각)
+    mode: str = "TRANSIT,WALK"
+    search_window: int = 7200
+    num_itineraries: int = 5
+    max_transfers: Optional[int] = None
+    max_walk_distance: Optional[int] = None
+    walk_reluctance: Optional[float] = None
+
 
 
 # --------------------
@@ -282,12 +317,12 @@ from datetime import datetime as dt
 
 class ArrivePlans(BaseModel):
     recommended_departure_time: str
-    remaining_minutes: int                  # ✅ 숫자: 지금부터 N분 후 출발
-    relative_departure_text: str            # ✅ 사람 친화 텍스트
+    remaining_minutes: int                  # 숫자: 지금부터 N분 후 출발
+    relative_departure_text: str            # 사람 친화 텍스트
     plans: Dict[str, List[ItineraryOut]]    # fastest / fewest_transfers / least_walking 중 존재하는 것만
 
 
-# ---- 새 엔드포인트(최종): 도착 시각 기준 출발 시각 + 남은 분/텍스트 + 경로(1~3종) ----
+# ---- 도착 시각 기준 출발 시각 + 남은 분/텍스트 + 경로(1~3종) ----
 @app.get("/route/arrive", response_model=ArrivePlans)
 def get_routes_by_arrival(
     from_place: str = Query(..., description="예) '37.5665,126.9780' 또는 '1:BS_3100_231001423'"),
@@ -310,7 +345,7 @@ def get_routes_by_arrival(
         mode=mode,
         search_window=search_window,
         num_itineraries=num_itineraries,
-        arrive_by=True,            # ✅ 핵심
+        arrive_by=True,            # 핵심
         max_transfers=max_transfers,
         max_walk_distance=max_walk_distance,
         walk_reluctance=walk_reluctance,
@@ -341,6 +376,99 @@ def get_routes_by_arrival(
         dep_dt = now_kst
     diff_sec = (dep_dt - now_kst).total_seconds()
     diff_min = int(diff_sec / 60)  # 정수 분
+
+    if diff_min > 0:
+        relative_text = f"지금부터 약 {diff_min}분 후 출발해야 합니다."
+    elif diff_min > -5:
+        relative_text = "지금 바로 출발해야 합니다!"
+    else:
+        relative_text = f"{abs(diff_min)}분 전에 출발했어야 합니다."
+
+    return ArrivePlans(
+        recommended_departure_time=recommended_departure_time,
+        remaining_minutes=diff_min,
+        relative_departure_text=relative_text,
+        plans=plan_dict,
+    )
+
+
+# --------------------
+# POST /route (body로 받기)
+# --------------------
+@app.post("/route", response_model=SortedPlans)
+def post_routes(body: RouteRequest = Body(...)):
+    params = build_otp_params(
+        body.from_place, body.to_place, body.date, body.time, body.mode,
+        body.search_window, body.num_itineraries, body.arrive_by,
+        body.max_transfers, body.max_walk_distance, body.walk_reluctance,
+    )
+    data = fetch_otp_plan(params)
+    plans = transform_sorted_plans(data)
+    n = min(body.num_itineraries, len(plans.fastest))
+    return SortedPlans(
+        fastest=plans.fastest[:n],
+        fewest_transfers=plans.fewest_transfers[:n],
+        least_walking=plans.least_walking[:n],
+    )
+
+
+# --------------------
+# POST /route/one (body로 받기)
+# --------------------
+@app.post("/route/one", response_model=OneRouteResponse)
+def post_best_route(body: RouteOneRequest = Body(...)):
+    params = build_otp_params(
+        body.from_place, body.to_place, body.date, body.time, body.mode,
+        body.search_window, body.num_itineraries, body.arrive_by,
+        body.max_transfers, body.max_walk_distance, body.walk_reluctance,
+    )
+    data = fetch_otp_plan(params)
+    plans = transform_sorted_plans(data)
+    chosen = select_one(plans, body.criterion)
+    return OneRouteResponse(criterion=body.criterion, result=chosen)
+
+
+# --------------------
+# POST /route/arrive (body로 받기)
+# --------------------
+@app.post("/route/arrive", response_model=ArrivePlans)
+def post_routes_by_arrival(body: ArriveRequest = Body(...)):
+    params = build_otp_params(
+        from_place=body.from_place,
+        to_place=body.to_place,
+        date=body.date,
+        time=body.arrive_time,      # 도착 시각을 time에 넣음
+        mode=body.mode,
+        search_window=body.search_window,
+        num_itineraries=body.num_itineraries,
+        arrive_by=True,             # 핵심
+        max_transfers=body.max_transfers,
+        max_walk_distance=body.max_walk_distance,
+        walk_reluctance=body.walk_reluctance,
+    )
+    data = fetch_otp_plan(params)
+    all_plans = transform_sorted_plans(data)
+
+    plan_dict: Dict[str, List[ItineraryOut]] = {}
+    if all_plans.fastest:
+        plan_dict["fastest"] = [all_plans.fastest[0]]
+    if all_plans.fewest_transfers:
+        plan_dict["fewest_transfers"] = [all_plans.fewest_transfers[0]]
+    if all_plans.least_walking:
+        plan_dict["least_walking"] = [all_plans.least_walking[0]]
+
+    if not plan_dict:
+        raise HTTPException(status_code=404, detail="해당 도착 시각에 맞는 경로가 없습니다.")
+
+    from datetime import datetime as dt
+    recommended_departure_time = all_plans.fastest[0].depart_time
+    now_kst = dt.now(KST)
+    try:
+        dep_dt = dt.fromisoformat(recommended_departure_time)
+    except Exception:
+        dep_dt = now_kst
+    diff_sec = (dep_dt - now_kst).total_seconds()
+    diff_min = int(diff_sec / 60)
 
     if diff_min > 0:
         relative_text = f"지금부터 약 {diff_min}분 후 출발해야 합니다."
